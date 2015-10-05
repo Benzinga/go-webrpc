@@ -1,2 +1,2 @@
 # Go-WebRPC
-[![godoc.org](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/Benzinga/go-webrpc)
+[![godoc.org](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/Benzinga/go-webrpc) [![Build Status](https://travis-ci.org/Benzinga/go-webrpc.svg)](https://travis-ci.org/Benzinga/go-webrpc) [![codecov.io](http://codecov.io/github/Benzinga/go-webrpc/coverage.svg?branch=master)](http://codecov.io/github/Benzinga/go-webrpc?branch=master)
