@@ -1,4 +1,4 @@
-package rpc
+package webrpc
 
 type channel struct {
 	name  string

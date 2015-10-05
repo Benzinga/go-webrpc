@@ -1,4 +1,4 @@
-package rpc
+package webrpc
 
 import (
 	"encoding/json"
