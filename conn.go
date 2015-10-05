@@ -143,6 +143,7 @@ func (c *Conn) OnError(handler func(error)) {
 	c.onError = handler
 }
 
+// OnClose sets the close handler for a socket.
 func (c *Conn) OnClose(handler func()) {
 	c.onClose = handler
 }
