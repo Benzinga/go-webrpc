@@ -47,6 +47,11 @@ func newConn(s *Server, ws *websocket.Conn) *Conn {
 	return &conn
 }
 
+// Close closes the underlying connection.
+func (c *Conn) Close() error {
+	return c.ws.Close()
+}
+
 // Emit sends an event to the client.
 func (c *Conn) Emit(name string, args ...interface{}) error {
 	msg, err := NewEvent(name, args...)
@@ -138,7 +143,6 @@ func (c *Conn) OnError(handler func(error)) {
 	c.onError = handler
 }
 
-// OnClose sets the error handler for a socket.
 func (c *Conn) OnClose(handler func()) {
 	c.onClose = handler
 }
