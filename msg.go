@@ -7,6 +7,7 @@ type MessageType int
 
 // This is an enumeration of possible event types.
 const (
+	Init  MessageType = 0
 	Event MessageType = 1
 	Reply MessageType = 2
 	Ping  MessageType = 3
@@ -58,6 +59,10 @@ func newPing() Message {
 
 func newPong() Message {
 	return Message{Type: Pong}
+}
+
+func newInit() Message {
+	return Message{Type: Init}
 }
 
 // SetData sets the data to the provided arguments, returning an error if the

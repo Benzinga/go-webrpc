@@ -127,6 +127,10 @@ func (c *Conn) readLoop() {
 			continue
 		}
 
+		if msg.Type == Init {
+			continue
+		}
+
 		// Dispatch message to handler.
 		err = c.dispatch(msg)
 		if err != nil {
@@ -165,6 +169,13 @@ func (c *Conn) writeLoop() {
 		ticker.Stop()
 		c.ws.Close()
 	}()
+
+	c.ws.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingTimeout))
+
+	if err := c.write(websocket.TextMessage, newInit()); err != nil {
+		return
+	}
+
 	for {
 		select {
 		case message, ok := <-c.sendq:

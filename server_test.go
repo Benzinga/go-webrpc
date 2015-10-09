@@ -150,9 +150,11 @@ func TestServer(t *testing.T) {
 	})
 
 	cl.Emit("join", "#general")
-	cl.Emit("nick", "Test1")
-	otherClient(ts)
-	cl.Emit("quit")
+	cl.Emit("nick", "Test1", func(result bool) {
+		assert.True(t, result)
+		otherClient(ts)
+		cl.Emit("quit")
+	})
 
 	cl.Dispatch()
 

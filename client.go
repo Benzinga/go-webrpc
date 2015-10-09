@@ -160,8 +160,10 @@ func (c *Client) readLoop() {
 		}
 
 		switch message.Type {
+		case Init:
+			c.sendq <- newInit()
 		case Ping:
-			c.ws.WriteJSON(newPong())
+			c.sendq <- newPong()
 		case Reply:
 			cbchan, ok := c.replm[message.Ack]
 			if !ok {
