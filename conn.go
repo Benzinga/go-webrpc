@@ -16,8 +16,8 @@ var (
 
 const (
 	writeWait   = 10 * time.Second
-	pingTimeout = 120 * time.Second
-	pingPeriod  = 60 * time.Second
+	pingTimeout = 60 * time.Second
+	pingPeriod  = 20 * time.Second
 )
 
 // Conn represents an RPC connection.
