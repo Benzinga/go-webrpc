@@ -53,7 +53,15 @@ func (c *Conn) Close() error {
 }
 
 // Emit sends an event to the client.
-func (c *Conn) Emit(name string, args ...interface{}) error {
+func (c *Conn) Emit(name string, args ...interface{}) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			if e, ok := r.(string); ok {
+				err = errors.New(e)
+			}
+		}
+	}()
+
 	msg, err := NewEvent(name, args...)
 	if err != nil {
 		return err
@@ -176,6 +184,7 @@ func (c *Conn) writeLoop() {
 		return
 	}
 
+	defer close(c.sendq)
 	for {
 		select {
 		case message, ok := <-c.sendq:
