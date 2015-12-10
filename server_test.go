@@ -2,6 +2,7 @@ package webrpc
 
 import (
 	"net/http/httptest"
+	"net/url"
 	"strconv"
 	"sync"
 	"testing"
@@ -97,8 +98,8 @@ func makeTestServer() *httptest.Server {
 	return httptest.NewServer(rpcserv)
 }
 
-func otherClient(ts *httptest.Server) {
-	cl, err := Dial(ts.URL)
+func otherClient(urlstr string) {
+	cl, err := Dial(urlstr)
 	if err != nil {
 		panic(err)
 	}
@@ -122,7 +123,11 @@ func TestServer(t *testing.T) {
 	ts := makeTestServer()
 	defer ts.Close()
 
-	cl, err := Dial(ts.URL)
+	u, _ := url.Parse(ts.URL)
+	u.Scheme = "ws"
+	urlstr := u.String()
+
+	cl, err := Dial(urlstr)
 	require.Nil(t, err)
 	defer cl.Close()
 
@@ -152,7 +157,7 @@ func TestServer(t *testing.T) {
 	cl.Emit("join", "#general")
 	cl.Emit("nick", "Test1", func(result bool) {
 		assert.True(t, result)
-		otherClient(ts)
+		otherClient(urlstr)
 		cl.Emit("quit")
 	})
 
