@@ -2,6 +2,7 @@ package webrpc
 
 import (
 	"errors"
+	"log"
 	"net"
 	"reflect"
 	"time"
@@ -67,7 +68,7 @@ func (c *Conn) Emit(name string, args ...interface{}) (err error) {
 		return err
 	}
 
-	c.sendq <- msg
+	c.send(msg)
 	return nil
 }
 
@@ -173,9 +174,19 @@ func (c *Conn) writeRaw(mt int) error {
 func (c *Conn) writeLoop() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
+		// Make sure sends do not deadlock.
+		go func() {
+			for range c.sendq {
+			}
+		}()
+
+		// Leave all channels.
 		c.leaveChans()
 		ticker.Stop()
 		c.ws.Close()
+
+		// Also ends consumption loop above.
+		close(c.sendq)
 	}()
 
 	c.ws.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(pingTimeout))
@@ -184,7 +195,6 @@ func (c *Conn) writeLoop() {
 		return
 	}
 
-	defer close(c.sendq)
 	for {
 		select {
 		case message, ok := <-c.sendq:
@@ -204,5 +214,10 @@ func (c *Conn) writeLoop() {
 }
 
 func (c *Conn) send(msg Message) {
-	c.sendq <- msg
+	select {
+	case c.sendq <- msg:
+		return
+	default:
+		log.Println("sendq exceeded for " + c.Addr().String())
+	}
 }
