@@ -36,11 +36,11 @@ func (c *Conn) joinChan(ch *channel) {
 }
 
 func (c *Conn) leaveChan(ch *channel) {
-	delete(ch.peers, c)
-
 	ch.mutex.Lock()
-	delete(c.chans, ch.name)
+	delete(ch.peers, c)
 	ch.mutex.Unlock()
+
+	delete(c.chans, ch.name)
 }
 
 func (c *Conn) leaveChans() {
