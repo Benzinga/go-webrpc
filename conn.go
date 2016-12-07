@@ -19,6 +19,7 @@ const (
 	writeWait   = 10 * time.Second
 	pingTimeout = 60 * time.Second
 	pingPeriod  = 20 * time.Second
+	sendqLength = 4096
 )
 
 // Conn represents an RPC connection.
@@ -36,7 +37,7 @@ func newConn(s *Server, ws *websocket.Conn) *Conn {
 	conn := Conn{
 		s:     s,
 		ws:    ws,
-		sendq: make(chan Message, 256),
+		sendq: make(chan Message, sendqLength),
 		chans: map[string]*channel{},
 	}
 
@@ -219,5 +220,6 @@ func (c *Conn) send(msg Message) {
 		return
 	default:
 		log.Println("sendq exceeded for " + c.Addr().String())
+		c.ws.Close()
 	}
 }
