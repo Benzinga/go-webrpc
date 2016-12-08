@@ -7,25 +7,40 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  4096,
-	WriteBufferSize: 4096,
-	EnableCompression: true,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
-
 // Server implements an RPC server.
 type Server struct {
 	chans     map[string]*channel
 	onConnect func(c *Conn)
+	upgrader  websocket.Upgrader
+}
+
+// Config specifies a configuration for the server.
+type Config struct {
+	ReadBufferSize, WriteBufferSize int
+	EnableCompression               bool
 }
 
 // NewServer creates a new server instance.
 func NewServer() *Server {
+	return NewServerWithConfig(Config{
+		ReadBufferSize:    4096,
+		WriteBufferSize:   4096,
+		EnableCompression: true,
+	})
+}
+
+// NewServerWithConfig creates a new server with config.
+func NewServerWithConfig(c Config) *Server {
 	return &Server{
 		chans: map[string]*channel{},
+		upgrader: websocket.Upgrader{
+			ReadBufferSize:    c.ReadBufferSize,
+			WriteBufferSize:   c.WriteBufferSize,
+			EnableCompression: c.EnableCompression,
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		},
 	}
 }
 
@@ -44,7 +59,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ws, err := upgrader.Upgrade(w, r, nil)
+	ws, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
