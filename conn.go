@@ -19,7 +19,7 @@ const (
 	writeWait   = 10 * time.Second
 	pingTimeout = 60 * time.Second
 	pingPeriod  = 20 * time.Second
-	sendqLength = 4096
+	sendqLength = 1024
 )
 
 // Conn represents an RPC connection.
