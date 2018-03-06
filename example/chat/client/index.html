@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <title>WebRPC Chat Demo</title>
+
+    <!-- Styles -->
+    <style>
+      .container {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        width: 800px;
+        height: 250px;
+        background-color: #eee;
+      }
+
+      /* Log */
+      .log {
+        position: relative;
+        grid-column: 1 / 1;
+        overflow: auto;
+      }
+      .log-container {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        overflow-y: auto;
+        max-height: 100%;
+      }
+      .log-entry {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        height: auto;
+      }
+      .log-entry-user {
+        grid-column: 1;
+      }
+      .log-entry-message {
+        grid-column: 2;
+      }
+
+      /* Chat box */
+      .chatbox {
+        display: grid;
+        grid-column: 1 / 1;
+        grid-template-columns: 1fr auto;
+        margin: 0;
+      }
+      .chatbox-input {
+        grid-column: 1;
+      }
+      .chatbox-submit {
+        grid-column: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Layout -->
+    <h1>WebRPC Demo</h1>
+    <div class="container">
+      <div class="log">
+        <div class="log-container">
+        </div>
+      </div>
+      <form class="chatbox">
+        <input type="text" class="chatbox-input" />
+        <button type="submit" class="chatbox-submit">Send!</button>
+      </form>
+    </div>
+
+    <!-- Templates -->
+    <script id="msg-template" type="text/html">
+      <div class="log-entry">
+        <div class="log-entry-user">{{user}}</div>
+        <div class="log-entry-message">{{msg}}</div>
+      </div>
+    </script>
+    <script id="join-template" type="text/html">
+      <div class="log-entry">
+        <div class="log-entry-user">{{user}}</div>
+        <div class="log-entry-message">Has joined {{chan}}.</div>
+      </div>
+    </script>
+    <script id="part-template" type="text/html">
+      <div class="log-entry">
+        <div class="log-entry-user">{{user}}</div>
+        <div class="log-entry-message">Has left {{chan}}.</div>
+      </div>
+    </script>
+
+    <script src="./chat.js"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+version: '3'
+services:
+  client:
+    image: node
+    volumes:
+      - "./client:/app"
+    working_dir: "/app"
+    command: ["/bin/bash", "-c", "yarn && yarn run serve"]
+    ports:
+      - "1234:1234"
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+      - CHOKIDAR_INTERVAL=1
+  server:
+    image: golang
+    volumes:
+      - "../..:/go/src/github.com/Benzinga/go-webrpc"
+    command: ["/bin/bash", "-c", "go get -v github.com/Benzinga/go-webrpc && go run /go/src/github.com/Benzinga/go-webrpc/example/chat/server/server.go"]
+    ports:
+      - "4321:4321"
